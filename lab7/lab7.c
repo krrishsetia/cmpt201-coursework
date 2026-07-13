@@ -90,15 +90,13 @@ void groupByKey(IntermediateInput *input, Output *output, int *result_count) {
     if (output[i].doubled_value == input->doubled_value) {
       output[i].line_numbers[output[i].count] = input->line_number;
       output[i].count += 1;
-      break;
-    } else {
-      output[i].doubled_value = input->doubled_value;
-      output[i].line_numbers[0] = input->line_number;
-      output[i].count = 1;
-      increment++;
+      return;
     }
   }
-  *result_count += increment;
+  output[*result_count].doubled_value = input->doubled_value;
+  output[*result_count].line_numbers[0] = input->line_number;
+  output[*result_count].count = 1;
+  (*result_count)++;
 }
 
 void reduce(Output *output) {
@@ -109,7 +107,7 @@ void reduce(Output *output) {
     if (i == output->count - 1)
       printf("%d", output->line_numbers[i]);
     else
-      printf("%d", output->line_numbers[i]);
+      printf("%d, ", output->line_numbers[i]);
   }
   printf("])\n");
 }
