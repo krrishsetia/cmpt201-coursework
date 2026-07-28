@@ -1,3 +1,38 @@
+/*
+Questions to answer at top of server.c:
+(You should not need to change client.c)
+Understanding the Client:
+1. How is the client sending data to the server? What protocol?
+it is using tcp to send data to the server using write
+2. What data is the client sending to the server?
+just a string, for the server
+Understanding the Server:
+1. Explain the argument that the `run_acceptor` thread is passed as an argument.
+it is a struct, that contains a atomic_bool, a linked_list head and a mutex pointer
+they are used to tell the thread when to end, where to add its new node, and a mutex to prevent
+reace conditions
+2. How are received messages stored?
+in a linked list
+3. What does `main()` do with the received messages?
+calls collect_all, which prints out the data, and then frees the node before moving on to the next
+4. How are threads used in this sample code?
+the threads, handle an individual, clients, and the assignment of the threads of clients
+*/
+
+/*
+ *Explain the use of non-blocking sockets in this lab.
+    How are sockets made non-blocking?
+    using either fcntl or when creating the socket
+    What sockets are made non-blocking?
+    sockets that are, in loops so that if they are called using a blocking function, that they are
+    left to not be stuck within the loop, allowing them to exit the loop with either enough
+    iterations having passed or having their while loop condition be made false
+    Why are these sockets made non-blocking? What purpose does it serve?
+    so that it can be killed when the bools running the while loops these blocking functions are in
+    are set to false, it can kill the loop as it would otherwise be stuck there unable to do
+    anything.
+*/
+
 #include <arpa/inet.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -11,7 +46,7 @@
 #include <unistd.h>
 #define BUF_SIZE 1024
 #define PORT 8001
-#define LISTEN_BACKLOG 32
+#define LISTEN_BACKLOG 4
 #define MAX_CLIENTS 4
 #define NUM_MSG_PER_CLIENT 5
 
